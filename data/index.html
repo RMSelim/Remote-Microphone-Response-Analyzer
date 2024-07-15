@@ -1,0 +1,262 @@
+<!DOCTYPE HTML><html>
+<head>
+  <title>Remote Microphone Response Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <style>
+    html {
+  font-family: Helvetica;
+  display: inline-block;
+  margin: 0px auto;
+  text-align: center;
+}
+body {
+      min-width: 310px;
+    	max-width: 800px;
+    	height: 400px;
+      margin: 0 auto;
+}
+h1{
+  color: #0F3376;
+  padding: 2vh;
+  font-family: Arial;
+  font-size: 2.5rem;
+  text-align: center;
+}
+h2{
+  padding: 2vh;
+  font-family: Arial;
+  font-size: 1.5rem;
+  text-align: left;
+}
+p{
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.button {
+  display: inline-block;
+  background-color: #08c96b;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-size: 20px;
+  margin: 2px;
+  cursor: pointer;
+}
+.button2 {
+  background-color: #f44336;
+}
+  </style>
+</head>
+<body>
+  <h1>Welcome to your Remote Microphone Response Analyzer!</h1>
+  <h2>Microphone Sensitivity: <strong> %SENSITIVITY%</strong> dB</h2>
+  <p><a href="/sensitivity"><button class="button">Calculate Sensitivity</button></a>  
+	<a href="/resetSensitivity"><button class="button button2">Reset</button></a>
+
+	  
+  <div id="chart-1k" class="container"></div>
+  <p><a href="/first1kTest"><button class="button">First 1k test</button></a>  
+	<a href="/second1kTest"><button class="button">Second 1k Test</button></a>
+	<a href="/third1kTest"><button class="button">Third 1k Test</button></a>
+	<a href="/reset1k"><button class="button button2">Reset</button></a>
+	</p>
+	  
+  <div id="chart-2k" class="container"></div>
+  <p><a href="/first2kTest"><button class="button">First 2k test</button></a>  
+	<a href="/second2kTest"><button class="button">Second 2k Test</button></a>
+	<a href="/third2kTest"><button class="button">Third 2k Test</button></a>
+	<a href="/reset2k"><button class="button button2">Reset</button></a>
+	</p>
+	
+  <div id="chart-3k" class="container"></div>
+  <p><a href="/first3kTest"><button class="button">First 3k test</button></a>  
+	<a href="/second3kTest"><button class="button">Second 3k Test</button></a>
+	<a href="/third3kTest"><button class="button">Third 3k Test</button></a>
+	<a href="/reset3k"><button class="button button2">Reset</button></a>
+	</p>
+
+  
+  <div id="chart-freqResponse" class="container"></div>
+  <p><a href="/freqResponse"><button class="button">Frequency Response Test</button></a></p>
+</body>
+<script>
+
+	//1k
+
+var chart1k = new Highcharts.Chart({
+  chart:{ renderTo : 'chart-1k' },
+  title: { text: '1k Hz Directivity' },
+  series: [{
+    showInLegend: false,
+	type: 'spline',
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#059e8a' }
+  },
+  xAxis: {
+	categories: ['First Angle', 'Second Angle', 'Third Angle'],
+	title: { text: 'Angle' }
+  },
+  yAxis: {
+	min: 0,
+    max: 160000,
+    title: { text: 'Amplitude' }
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+          y = parseFloat(this.responseText);
+	  if(chart1k.series[0].data.length > 3) {
+        chart1k.series[0].addPoint([y], true, true, true);
+      } else {
+        chart1k.series[0].addPoint([y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/plot1k", true);
+  xhttp.send();
+}, 10) ;
+
+	//2k
+
+var chart2k = new Highcharts.Chart({
+  chart:{ renderTo : 'chart-2k' },
+  title: { text: '2k Hz Directivity' },
+  series: [{
+    showInLegend: false,
+	type: 'spline',
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#059e8a' }
+  },
+  xAxis: {
+	categories: ['First Angle', 'Second Angle', 'Third Angle'],
+	title: { text: 'Angle' }
+  },
+  yAxis: {
+	min: 0,
+    max: 160000,
+    title: { text: 'Amplitude' }
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+          y = parseFloat(this.responseText);
+	  if(chart2k.series[0].data.length > 3) {
+        chart2k.series[0].addPoint([y], true, true, true);
+      } else {
+        chart2k.series[0].addPoint([y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/plot2k", true);
+  xhttp.send();
+}, 10) ;
+
+	//3k
+
+var chart3k = new Highcharts.Chart({
+  chart:{ renderTo : 'chart-3k' },
+  title: { text: '3k Hz Directivity' },
+  series: [{
+    showInLegend: false,
+	type: 'spline',
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#059e8a' }
+  },
+  xAxis: {
+	categories: ['First Angle', 'Second Angle', 'Third Angle'],
+	title: { text: 'Angle' }
+  },
+  yAxis: {
+	min: 0,
+    max: 160000,
+    title: { text: 'Amplitude' }
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+          y = parseFloat(this.responseText);
+	  if(chart3k.series[0].data.length > 3) {
+        chart3k.series[0].addPoint([y], true, true, true);
+      } else {
+        chart3k.series[0].addPoint([y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/plot3k", true);
+  xhttp.send();
+}, 10) ;
+
+
+	//Frequency Response
+
+var chartFreq = new Highcharts.Chart({
+  chart:{ renderTo : 'chart-freqResponse' },
+  title: { text: 'Frequency Response Curve' },
+  series: [{
+    showInLegend: false,
+	type: 'spline',
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#059e8a' }
+  },
+  xAxis: {
+	categories: ['150', '350', '600', '1.2k', '2.5k', '5k', '10k'],
+	title: { text: 'Frequency (Hz)' }
+  },
+  yAxis: {
+	min: 200,
+    max: 30000,
+    title: { text: 'Amplitude' }
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+          y = parseFloat(this.responseText);
+	  if(chartFreq.series[0].data.length > 7) {
+        chartFreq.series[0].addPoint([y], true, true, true);
+      } else {
+        chartFreq.series[0].addPoint([y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/plotAmp", true);
+  xhttp.send();
+}, 10) ;
+</script>
+</html>
